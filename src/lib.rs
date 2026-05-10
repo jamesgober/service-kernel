@@ -59,7 +59,7 @@
 //! | [`health`] | Per-subsystem state, push-based aggregation, snapshots. |
 //! | [`metrics`] | Backend-agnostic counter/gauge/histogram trait, no-op default. |
 //! | [`worker`] | `Worker`/`AsyncWorker` traits, supervisor, watchdog, circuit breaker (gated on `tokio`). |
-//! | [`shutdown`] | Cooperative `ShutdownToken`, generic drain helper, hooks, coordinator (gated on `tokio`). |
+//! | `shutdown` | Cooperative `ShutdownToken`, generic drain helper, hooks, coordinator (gated on `tokio`). |
 //! | [`kernel`] | The fluent builder + assembled `Kernel` that wires everything together. |
 //!
 //! ## Feature flags
@@ -120,9 +120,7 @@ pub mod worker;
 /// not re-exported here — pull those from their home modules when
 /// needed.
 pub mod prelude {
-    pub use crate::errors::{
-        Classification, ErrorAction, ErrorClassifier, KernelError, Severity,
-    };
+    pub use crate::errors::{Classification, ErrorAction, ErrorClassifier, KernelError, Severity};
     pub use crate::events::{EventDispatcher, EventHandle, KernelEvent, LifecycleEvent};
     pub use crate::health::{HealthHandle, HealthSnapshot, HealthStatus};
     pub use crate::kernel::{

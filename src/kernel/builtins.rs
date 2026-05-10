@@ -242,7 +242,12 @@ mod tests {
         let names: std::collections::HashSet<&str> = BUILTIN_NAMES.iter().copied().collect();
         for s in boxed_builtins() {
             for dep in s.dependencies() {
-                assert!(names.contains(dep), "{} declares unknown dep {}", s.name(), dep);
+                assert!(
+                    names.contains(dep),
+                    "{} declares unknown dep {}",
+                    s.name(),
+                    dep
+                );
             }
         }
     }

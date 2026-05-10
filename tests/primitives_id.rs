@@ -45,7 +45,9 @@ fn test_concurrent_ids_unique_across_threads() {
     for _ in 0..THREADS {
         let gen = Arc::clone(&gen);
         handles.push(thread::spawn(move || {
-            (0..PER_THREAD).map(|_| gen.next_worker_id()).collect::<Vec<_>>()
+            (0..PER_THREAD)
+                .map(|_| gen.next_worker_id())
+                .collect::<Vec<_>>()
         }));
     }
 

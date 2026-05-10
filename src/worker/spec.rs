@@ -263,7 +263,10 @@ mod tests {
 
     #[test]
     fn test_backoff_builders_set_backoff_policy() {
-        assert_eq!(WorkerSpec::new("a").backoff_none().backoff, BackoffPolicy::None);
+        assert_eq!(
+            WorkerSpec::new("a").backoff_none().backoff,
+            BackoffPolicy::None
+        );
         assert_eq!(
             WorkerSpec::new("a")
                 .backoff_fixed(Duration::from_millis(50))

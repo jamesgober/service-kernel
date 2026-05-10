@@ -20,26 +20,30 @@ fn test_shutdown_emits_started_and_completed_events() {
     let completed = Arc::new(AtomicUsize::new(0));
     {
         let s_cb = Arc::clone(&started);
-        let _ = kernel
-            .context()
-            .events
-            .subscribe("kernel.lifecycle.shutdown_started", move |event| {
-                if matches!(event, KernelEvent::Lifecycle(LifecycleEvent::ShutdownStarted { .. })) {
-                    let _ = s_cb.fetch_add(1, Ordering::Relaxed);
-                }
-            });
+        let _ =
+            kernel
+                .context()
+                .events
+                .subscribe("kernel.lifecycle.shutdown_started", move |event| {
+                    if matches!(
+                        event,
+                        KernelEvent::Lifecycle(LifecycleEvent::ShutdownStarted { .. })
+                    ) {
+                        let _ = s_cb.fetch_add(1, Ordering::Relaxed);
+                    }
+                });
         let c_cb = Arc::clone(&completed);
-        let _ = kernel
-            .context()
-            .events
-            .subscribe("kernel.lifecycle.shutdown_completed", move |event| {
+        let _ = kernel.context().events.subscribe(
+            "kernel.lifecycle.shutdown_completed",
+            move |event| {
                 if matches!(
                     event,
                     KernelEvent::Lifecycle(LifecycleEvent::ShutdownCompleted { .. })
                 ) {
                     let _ = c_cb.fetch_add(1, Ordering::Relaxed);
                 }
-            });
+            },
+        );
     }
 
     let other = kernel.clone();

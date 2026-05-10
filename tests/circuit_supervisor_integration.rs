@@ -149,10 +149,16 @@ fn test_circuit_closes_on_successful_trial() {
 
     kernel.run().unwrap();
     join.join().unwrap();
-    assert!(opened.load(Ordering::Relaxed) >= 1, "expected CircuitOpened");
+    assert!(
+        opened.load(Ordering::Relaxed) >= 1,
+        "expected CircuitOpened"
+    );
     assert!(
         half_opened.load(Ordering::Relaxed) >= 1,
         "expected CircuitHalfOpened"
     );
-    assert!(closed.load(Ordering::Relaxed) >= 1, "expected CircuitClosed");
+    assert!(
+        closed.load(Ordering::Relaxed) >= 1,
+        "expected CircuitClosed"
+    );
 }

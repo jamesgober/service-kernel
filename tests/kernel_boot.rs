@@ -31,11 +31,13 @@ fn test_consumer_subsystem_receives_boot_load_in_order() {
             "tracker"
         }
         fn boot(&self, _ctx: &KernelContext) -> Result<(), KernelError> {
-            self.boot_at.store(SEQUENCE.fetch_add(1, Ordering::Relaxed), Ordering::Relaxed);
+            self.boot_at
+                .store(SEQUENCE.fetch_add(1, Ordering::Relaxed), Ordering::Relaxed);
             Ok(())
         }
         fn load(&self, _ctx: &KernelContext) -> Result<(), KernelError> {
-            self.load_at.store(SEQUENCE.fetch_add(1, Ordering::Relaxed), Ordering::Relaxed);
+            self.load_at
+                .store(SEQUENCE.fetch_add(1, Ordering::Relaxed), Ordering::Relaxed);
             Ok(())
         }
     }

@@ -284,7 +284,10 @@ mod tests {
         let now = Instant::now();
         let d = Deadline::new(now.checked_add(Duration::from_secs(30)).unwrap());
         assert!(!d.is_expired());
-        assert_eq!(d.instant(), now.checked_add(Duration::from_secs(30)).unwrap());
+        assert_eq!(
+            d.instant(),
+            now.checked_add(Duration::from_secs(30)).unwrap()
+        );
     }
 
     #[test]

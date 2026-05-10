@@ -165,7 +165,10 @@ mod tests {
     #[test]
     fn test_kinds_match_specification() {
         assert_eq!(KernelMetric::LifecyclePhase.kind(), MetricKind::Gauge);
-        assert_eq!(KernelMetric::LifecycleTransitions.kind(), MetricKind::Counter);
+        assert_eq!(
+            KernelMetric::LifecycleTransitions.kind(),
+            MetricKind::Counter
+        );
         assert_eq!(KernelMetric::ErrorsBySeverity.kind(), MetricKind::Counter);
         assert_eq!(KernelMetric::HealthAggregate.kind(), MetricKind::Gauge);
         assert_eq!(KernelMetric::WorkersRunning.kind(), MetricKind::Gauge);

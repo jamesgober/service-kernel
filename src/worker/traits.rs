@@ -53,11 +53,7 @@ impl WorkerError {
 
 impl fmt::Display for WorkerError {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        let prefix = Lang::translate(
-            "kernel.worker.error.prefix",
-            None,
-            Some("worker error"),
-        );
+        let prefix = Lang::translate("kernel.worker.error.prefix", None, Some("worker error"));
         write!(f, "{}: {}", prefix, self.message)
     }
 }

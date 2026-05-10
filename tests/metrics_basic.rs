@@ -20,10 +20,7 @@ struct InMemoryBackend {
 
 impl MetricsBackend for InMemoryBackend {
     fn counter(&self, name: &str, value: u64, _: &[(&str, &str)]) {
-        self.counters
-            .lock()
-            .unwrap()
-            .push((name.to_owned(), value));
+        self.counters.lock().unwrap().push((name.to_owned(), value));
         let _ = self.counter_total.fetch_add(value, Ordering::Relaxed);
     }
     fn gauge(&self, name: &str, value: f64, _: &[(&str, &str)]) {
@@ -62,10 +59,7 @@ fn test_custom_backend_receives_inputs() {
 #[test]
 fn test_kernel_metric_enum_matches_constants() {
     assert_eq!(KernelMetric::LifecyclePhase.name(), names::LIFECYCLE_PHASE);
-    assert_eq!(
-        KernelMetric::ShutdownDuration.kind(),
-        MetricKind::Histogram
-    );
+    assert_eq!(KernelMetric::ShutdownDuration.kind(), MetricKind::Histogram);
 }
 
 #[test]

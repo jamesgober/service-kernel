@@ -1,7 +1,7 @@
 //! Workers and supervision.
 //!
 //! Workers are the unit of supervised, long-running work. The
-//! [`Supervisor`] catches panics, applies restart policy, tracks
+//! `Supervisor` catches panics, applies restart policy, tracks
 //! per-worker state, and reports back to the kernel's events,
 //! health, and metrics handles. The supervisor runs as a single
 //! Tokio task driving a `tokio::select!` loop — not a per-worker
@@ -14,9 +14,9 @@
 //! The kernel's core types ([`crate::lifecycle`], [`crate::events`],
 //! [`crate::errors`], [`crate::health`], [`crate::metrics`]) stay
 //! runtime-agnostic. The `worker` module is the first place Tokio
-//! types appear in public signatures: [`WorkerContext`] holds a
-//! [`tokio_util::sync::CancellationToken`], [`Supervisor`] uses
-//! [`tokio::task::JoinSet`]. The runtime-agnostic-core rule applies
+//! types appear in public signatures: `WorkerContext` holds a
+//! `tokio_util::sync::CancellationToken`, and `Supervisor` uses
+//! `tokio::task::JoinSet`. The runtime-agnostic-core rule applies
 //! to everything outside `worker` and `shutdown`; this module is the
 //! Tokio-bound boundary.
 

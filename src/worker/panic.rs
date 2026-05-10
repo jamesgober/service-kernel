@@ -41,11 +41,9 @@ impl PanicReason {
         match self {
             PanicReason::StaticStr(s) => (*s).to_owned(),
             PanicReason::String(s) => s.clone(),
-            PanicReason::Unknown => Lang::translate(
-                "kernel.worker.panic.unknown",
-                None,
-                Some("<unknown panic>"),
-            ),
+            PanicReason::Unknown => {
+                Lang::translate("kernel.worker.panic.unknown", None, Some("<unknown panic>"))
+            }
         }
     }
 
@@ -66,11 +64,7 @@ impl PanicReason {
 
 impl fmt::Display for PanicReason {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        let prefix = Lang::translate(
-            "kernel.worker.panic.prefix",
-            None,
-            Some("worker panicked"),
-        );
+        let prefix = Lang::translate("kernel.worker.panic.prefix", None, Some("worker panicked"));
         write!(f, "{}: {}", prefix, self.message())
     }
 }

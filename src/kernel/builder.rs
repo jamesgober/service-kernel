@@ -283,13 +283,12 @@ impl KernelBuilder {
         let ordered: Vec<Box<dyn Subsystem>> = reorder(combined, &sorted);
 
         // Construct the registries.
-        let metrics: MetricsHandle = metrics_backend.unwrap_or_else(|| Arc::new(NoopMetricsBackend));
+        let metrics: MetricsHandle =
+            metrics_backend.unwrap_or_else(|| Arc::new(NoopMetricsBackend));
         let dispatcher = Arc::new(EventDispatcher::new());
 
-        let mut lifecycle_controller = LifecycleController::with_events_and_metrics(
-            dispatcher.handle(),
-            Arc::clone(&metrics),
-        );
+        let mut lifecycle_controller =
+            LifecycleController::with_events_and_metrics(dispatcher.handle(), Arc::clone(&metrics));
         // (no further mutation needed; controller created in one shot.)
         let _ = &mut lifecycle_controller;
         let lifecycle = Arc::new(lifecycle_controller);
@@ -304,9 +303,10 @@ impl KernelBuilder {
         let shutdown = Arc::new(ShutdownInner::new());
 
         #[cfg(feature = "tokio")]
-        let shutdown_coordinator = Arc::new(
-            crate::shutdown::ShutdownCoordinator::new(dispatcher.handle(), shutdown_grace),
-        );
+        let shutdown_coordinator = Arc::new(crate::shutdown::ShutdownCoordinator::new(
+            dispatcher.handle(),
+            shutdown_grace,
+        ));
 
         let inner = KernelInner {
             name,
@@ -464,7 +464,10 @@ mod tests {
             })
             .build()
             .unwrap_err();
-        assert!(matches!(err, BuildError::DuplicateSubsystem { name: "store" }));
+        assert!(matches!(
+            err,
+            BuildError::DuplicateSubsystem { name: "store" }
+        ));
     }
 
     #[test]

@@ -85,9 +85,7 @@ impl KernelState {
             KernelState::Booting => Phase::Boot,
             KernelState::Loading => Phase::Load,
             KernelState::Running | KernelState::Degraded => Phase::Exec,
-            KernelState::Stopping | KernelState::Stopped | KernelState::Failed => {
-                Phase::Shutdown
-            }
+            KernelState::Stopping | KernelState::Stopped | KernelState::Failed => Phase::Shutdown,
         }
     }
 
@@ -177,8 +175,7 @@ mod tests {
     #[test]
     fn test_is_terminal_only_for_stopped_and_failed() {
         for state in ALL {
-            let expected =
-                matches!(state, KernelState::Stopped | KernelState::Failed);
+            let expected = matches!(state, KernelState::Stopped | KernelState::Failed);
             assert_eq!(state.is_terminal(), expected, "{:?}", state);
         }
     }
@@ -186,8 +183,7 @@ mod tests {
     #[test]
     fn test_is_running_only_for_running_and_degraded() {
         for state in ALL {
-            let expected =
-                matches!(state, KernelState::Running | KernelState::Degraded);
+            let expected = matches!(state, KernelState::Running | KernelState::Degraded);
             assert_eq!(state.is_running(), expected, "{:?}", state);
         }
     }

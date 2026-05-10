@@ -172,7 +172,11 @@ mod tests {
         let mut targets = Vec::with_capacity(1000);
         for i in 0..1000 {
             let last = if i % 2 == 0 { 1 } else { now - 100 };
-            targets.push(target(id_gen.next_worker_id(), last, Duration::from_millis(100)));
+            targets.push(target(
+                id_gen.next_worker_id(),
+                last,
+                Duration::from_millis(100),
+            ));
         }
         let timeouts = Watchdog::check(&targets, now);
         // Half the workers timed out (those with last=1, 1B nanos behind).

@@ -5,9 +5,7 @@
 
 #![allow(clippy::unwrap_used)]
 
-use service_kernel::lifecycle::{
-    assert_legal, is_legal, KernelState, LifecycleController, Phase,
-};
+use service_kernel::lifecycle::{assert_legal, is_legal, KernelState, LifecycleController, Phase};
 
 #[test]
 fn test_full_happy_path() {

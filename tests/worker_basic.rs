@@ -76,15 +76,18 @@ fn test_sync_worker_runs_and_emits_started_event() {
 
     let started = Arc::new(AtomicUsize::new(0));
     let started_cb = Arc::clone(&started);
-    let _ = kernel.context().events.subscribe("kernel.worker.started", move |event| {
-        if let KernelEvent::Worker(WorkerEvent {
-            event: WorkerLifecycleEvent::Started { .. },
-            ..
-        }) = event
-        {
-            let _ = started_cb.fetch_add(1, Ordering::Relaxed);
-        }
-    });
+    let _ = kernel
+        .context()
+        .events
+        .subscribe("kernel.worker.started", move |event| {
+            if let KernelEvent::Worker(WorkerEvent {
+                event: WorkerLifecycleEvent::Started { .. },
+                ..
+            }) = event
+            {
+                let _ = started_cb.fetch_add(1, Ordering::Relaxed);
+            }
+        });
 
     let other = kernel.clone();
     let join = thread::spawn(move || {

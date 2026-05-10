@@ -19,9 +19,9 @@ use std::panic::{catch_unwind, AssertUnwindSafe};
 use std::sync::{Arc, Mutex};
 use std::time::Duration;
 
+use crate::errors::ErrorRegistry;
 use crate::errors::{KernelError, KernelErrorCode};
 use crate::events::EventDispatcher;
-use crate::errors::ErrorRegistry;
 use crate::health::{HealthRegistry, HealthSnapshot};
 use crate::lifecycle::{KernelState, LifecycleController, LifecycleSnapshot};
 use crate::metrics::MetricsHandle;
@@ -263,8 +263,8 @@ impl Kernel {
     /// `Stopping → Stopped`, and returns.
     ///
     /// When the `tokio` feature is enabled and workers have been
-    /// registered via [`KernelBuilder::with_worker`](super::KernelBuilder::with_worker)
-    /// or [`KernelBuilder::with_async_worker`](super::KernelBuilder::with_async_worker),
+    /// registered via the `KernelBuilder::with_worker` or
+    /// `KernelBuilder::with_async_worker` builder methods,
     /// `run` constructs a Tokio runtime internally and drives the
     /// supervisor through Phase::Exec. Without workers, `run` blocks
     /// on the same `Condvar` it has used since Milestone E.
@@ -470,14 +470,13 @@ impl Kernel {
             .lock()
             .unwrap_or_else(std::sync::PoisonError::into_inner);
         for s in guard.iter_mut() {
-            let result =
-                catch_unwind(AssertUnwindSafe(|| s.boot(ctx))).map_err(|payload| {
-                    KernelError::Subsystem {
-                        code: KernelErrorCode::SubsystemBootFailed,
-                        name: s.name(),
-                        source: panic_message(&payload).into(),
-                    }
-                })?;
+            let result = catch_unwind(AssertUnwindSafe(|| s.boot(ctx))).map_err(|payload| {
+                KernelError::Subsystem {
+                    code: KernelErrorCode::SubsystemBootFailed,
+                    name: s.name(),
+                    source: panic_message(&payload).into(),
+                }
+            })?;
             result?;
             self.record_booted(s.name());
         }
@@ -491,14 +490,13 @@ impl Kernel {
             .lock()
             .unwrap_or_else(std::sync::PoisonError::into_inner);
         for s in guard.iter_mut() {
-            let result =
-                catch_unwind(AssertUnwindSafe(|| s.load(ctx))).map_err(|payload| {
-                    KernelError::Subsystem {
-                        code: KernelErrorCode::SubsystemBootFailed,
-                        name: s.name(),
-                        source: panic_message(&payload).into(),
-                    }
-                })?;
+            let result = catch_unwind(AssertUnwindSafe(|| s.load(ctx))).map_err(|payload| {
+                KernelError::Subsystem {
+                    code: KernelErrorCode::SubsystemBootFailed,
+                    name: s.name(),
+                    source: panic_message(&payload).into(),
+                }
+            })?;
             result?;
             self.record_loaded(s.name());
         }
@@ -592,7 +590,11 @@ impl Kernel {
         guard
             .iter()
             .map(|s| SubsystemSnapshot {
-                id: book.id.get(s.name()).copied().unwrap_or(SubsystemId::from_raw(0)),
+                id: book
+                    .id
+                    .get(s.name())
+                    .copied()
+                    .unwrap_or(SubsystemId::from_raw(0)),
                 name: s.name(),
                 dependencies: s.dependencies(),
                 health: s.health(),
@@ -630,8 +632,8 @@ fn panic_message(payload: &Box<dyn std::any::Any + Send>) -> String {
 #[cfg(test)]
 #[allow(clippy::unwrap_used, clippy::expect_used)]
 mod tests {
-    use super::*;
     use super::super::builder::KernelBuilder;
+    use super::*;
 
     fn assert_send_sync<T: Send + Sync>() {}
 

@@ -23,11 +23,19 @@ impl Subsystem for Stub {
 }
 
 fn boot_order(kernel: &service_kernel::kernel::Kernel) -> Vec<&'static str> {
-    kernel.snapshot().subsystems.iter().map(|s| s.name).collect()
+    kernel
+        .snapshot()
+        .subsystems
+        .iter()
+        .map(|s| s.name)
+        .collect()
 }
 
 fn position(order: &[&'static str], name: &str) -> usize {
-    order.iter().position(|n| *n == name).expect("subsystem not in boot order")
+    order
+        .iter()
+        .position(|n| *n == name)
+        .expect("subsystem not in boot order")
 }
 
 #[test]

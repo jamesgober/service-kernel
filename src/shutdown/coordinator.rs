@@ -95,10 +95,7 @@ impl ShutdownCoordinator {
     #[inline]
     #[must_use]
     pub fn hook_count(&self) -> usize {
-        self.hooks
-            .lock()
-            .map(|g| g.len())
-            .unwrap_or(0)
+        self.hooks.lock().map(|g| g.len()).unwrap_or(0)
     }
 
     /// Runs the shutdown sequence: signal the token, run hooks,

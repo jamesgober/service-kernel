@@ -190,7 +190,12 @@ mod tests {
         let id = id_gen.next_worker_id();
         let now = Instant::now();
         let events = [
-            WorkerLifecycleEvent::Started { id, name: "n", at: now }.kind(),
+            WorkerLifecycleEvent::Started {
+                id,
+                name: "n",
+                at: now,
+            }
+            .kind(),
             WorkerLifecycleEvent::Heartbeat { id, at: now }.kind(),
             WorkerLifecycleEvent::BecameIdle { id, at: now }.kind(),
             WorkerLifecycleEvent::BecameBusy { id, at: now }.kind(),
@@ -216,7 +221,12 @@ mod tests {
             }
             .kind(),
             WorkerLifecycleEvent::Stopping { id, at: now }.kind(),
-            WorkerLifecycleEvent::Stopped { id, name: "n", at: now }.kind(),
+            WorkerLifecycleEvent::Stopped {
+                id,
+                name: "n",
+                at: now,
+            }
+            .kind(),
             WorkerLifecycleEvent::CircuitOpened {
                 id,
                 name: "n",
@@ -224,8 +234,18 @@ mod tests {
                 at: now,
             }
             .kind(),
-            WorkerLifecycleEvent::CircuitHalfOpened { id, name: "n", at: now }.kind(),
-            WorkerLifecycleEvent::CircuitClosed { id, name: "n", at: now }.kind(),
+            WorkerLifecycleEvent::CircuitHalfOpened {
+                id,
+                name: "n",
+                at: now,
+            }
+            .kind(),
+            WorkerLifecycleEvent::CircuitClosed {
+                id,
+                name: "n",
+                at: now,
+            }
+            .kind(),
             WorkerLifecycleEvent::Timeout {
                 id,
                 name: "n",

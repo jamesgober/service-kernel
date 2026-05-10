@@ -314,10 +314,7 @@ impl Supervisor {
 
     fn spawn_one_if_idle(&mut self, worker_id: WorkerId) {
         // If a task for this worker is already in-flight, skip.
-        let already_running = self
-            .task_to_worker
-            .values()
-            .any(|id| *id == worker_id);
+        let already_running = self.task_to_worker.values().any(|id| *id == worker_id);
         if !already_running {
             self.spawn_one(worker_id);
         }
@@ -452,8 +449,7 @@ impl Supervisor {
             } else {
                 0
             };
-            let policy_allows =
-                registered.spec.restart.should_restart(has_failed, attempts);
+            let policy_allows = registered.spec.restart.should_restart(has_failed, attempts);
             let should_restart = policy_allows && !circuit_open;
             let delay = registered.spec.backoff.delay(attempts);
             registered.attempts = attempts;

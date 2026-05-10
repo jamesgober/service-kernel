@@ -110,14 +110,11 @@ mod tokio_main {
             "kernel.worker.restarted",
             "kernel.worker.stopped",
         ] {
-            let _ = kernel
-                .context()
-                .events
-                .subscribe(topic, |event| {
-                    if let KernelEvent::Worker(WorkerEvent { event: lc, .. }) = event {
-                        println!("[supervisor] {}", lc.kind());
-                    }
-                });
+            let _ = kernel.context().events.subscribe(topic, |event| {
+                if let KernelEvent::Worker(WorkerEvent { event: lc, .. }) = event {
+                    println!("[supervisor] {}", lc.kind());
+                }
+            });
         }
 
         // Run for 10 seconds, then signal shutdown.

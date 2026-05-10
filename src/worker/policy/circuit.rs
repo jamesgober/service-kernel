@@ -4,7 +4,7 @@
 //! breaker counts failures inside a sliding window and, on crossing
 //! the threshold, transitions to [`CircuitState::Open`] — refusing
 //! further restart attempts. A periodic [`CircuitBreaker::tick`] (driven
-//! by [`crate::worker::Watchdog`]) advances
+//! by the Tokio-gated `crate::worker::Watchdog`) advances
 //! `Open → HalfOpen` after the open duration elapses; a single
 //! trial run from `HalfOpen` either closes the breaker on success or
 //! re-opens it on failure.
@@ -91,11 +91,7 @@ impl CircuitPolicy {
     /// Constructs a policy with explicit values.
     #[inline]
     #[must_use]
-    pub fn new(
-        failure_threshold: u32,
-        failure_window: Duration,
-        open_duration: Duration,
-    ) -> Self {
+    pub fn new(failure_threshold: u32, failure_window: Duration, open_duration: Duration) -> Self {
         Self {
             failure_threshold,
             failure_window,
@@ -386,7 +382,11 @@ mod tests {
 
     #[test]
     fn test_concurrent_failures_count_correctly() {
-        let b = Arc::new(breaker_with(50, Duration::from_secs(60), Duration::from_secs(30)));
+        let b = Arc::new(breaker_with(
+            50,
+            Duration::from_secs(60),
+            Duration::from_secs(30),
+        ));
         let mut joins = Vec::new();
         for _ in 0..10 {
             let b = Arc::clone(&b);

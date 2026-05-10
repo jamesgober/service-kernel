@@ -93,7 +93,11 @@ impl HealthInner {
             } else if matches!(prev_subsystem, Some(prev) if prev == prev_aggregate)
                 && status < prev_aggregate
             {
-                guard.values().copied().max().unwrap_or(HealthStatus::Healthy)
+                guard
+                    .values()
+                    .copied()
+                    .max()
+                    .unwrap_or(HealthStatus::Healthy)
             } else {
                 prev_aggregate
             };
@@ -367,7 +371,10 @@ mod tests {
         let _ = dispatcher.subscribe("kernel.health.storage", move |event| {
             if matches!(
                 event,
-                KernelEvent::Health(HealthEvent::SubsystemChanged { subsystem: "storage", .. })
+                KernelEvent::Health(HealthEvent::SubsystemChanged {
+                    subsystem: "storage",
+                    ..
+                })
             ) {
                 let _ = cb.fetch_add(1, Ordering::Relaxed);
             }
@@ -444,7 +451,10 @@ mod tests {
         let count = Arc::new(AtomicUsize::new(0));
         let cb = Arc::clone(&count);
         let _ = dispatcher.subscribe("kernel.lifecycle.running", move |event| {
-            if matches!(event, KernelEvent::Lifecycle(LifecycleEvent::Transition { .. })) {
+            if matches!(
+                event,
+                KernelEvent::Lifecycle(LifecycleEvent::Transition { .. })
+            ) {
                 let _ = cb.fetch_add(1, Ordering::Relaxed);
             }
         });

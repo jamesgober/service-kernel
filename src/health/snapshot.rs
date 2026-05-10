@@ -114,6 +114,9 @@ mod tests {
             ("mango", HealthStatus::Critical),
             ("banana", HealthStatus::Unknown),
         ]);
-        assert_eq!(snap.unhealthy_subsystems(), vec!["banana", "mango", "zebra"]);
+        assert_eq!(
+            snap.unhealthy_subsystems(),
+            vec!["banana", "mango", "zebra"]
+        );
     }
 }

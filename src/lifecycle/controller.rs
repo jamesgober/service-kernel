@@ -205,7 +205,11 @@ impl LifecycleController {
             }));
         }
         if let Some(metrics) = self.metrics.as_ref() {
-            metrics.gauge(metric_names::LIFECYCLE_PHASE, f64::from(to.phase().ordinal()), &[]);
+            metrics.gauge(
+                metric_names::LIFECYCLE_PHASE,
+                f64::from(to.phase().ordinal()),
+                &[],
+            );
             metrics.counter(
                 metric_names::LIFECYCLE_TRANSITIONS,
                 1,
@@ -331,7 +335,11 @@ mod tests {
             KernelState::Stopped,
             KernelState::Failed,
         ] {
-            assert!(c.transition(state).is_err(), "Failed accepted -> {:?}", state);
+            assert!(
+                c.transition(state).is_err(),
+                "Failed accepted -> {:?}",
+                state
+            );
         }
     }
 

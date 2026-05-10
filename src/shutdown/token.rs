@@ -63,7 +63,6 @@ impl ShutdownToken {
     pub async fn signalled(&self) {
         self.inner.cancelled().await;
     }
-
 }
 
 impl Default for ShutdownToken {

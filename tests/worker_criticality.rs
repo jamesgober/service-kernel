@@ -74,7 +74,9 @@ fn test_optional_worker_failure_marks_health_degraded() {
 fn test_essential_worker_failure_marks_health_unhealthy() {
     let kernel = KernelBuilder::new("test")
         .with_worker(
-            WorkerSpec::new("always-failing").essential().restart_never(),
+            WorkerSpec::new("always-failing")
+                .essential()
+                .restart_never(),
             AlwaysFailing,
         )
         .build()

@@ -207,20 +207,16 @@ impl DaemonAdapter {
         }
         if let Some(path) = &self.config.pid_file {
             let pid = std::process::id();
-            std::fs::write(path, format!("{}\n", pid)).map_err(|e| {
-                KernelError::Subsystem {
-                    code: KernelErrorCode::ConfigInvalid,
-                    name: "daemon",
-                    source: format!("pid file {}: {}", path.display(), e).into(),
-                }
+            std::fs::write(path, format!("{}\n", pid)).map_err(|e| KernelError::Subsystem {
+                code: KernelErrorCode::ConfigInvalid,
+                name: "daemon",
+                source: format!("pid file {}: {}", path.display(), e).into(),
             })?;
             let mut guard = self
                 .pid_file
                 .lock()
                 .unwrap_or_else(std::sync::PoisonError::into_inner);
-            *guard = Some(PidFile {
-                path: path.clone(),
-            });
+            *guard = Some(PidFile { path: path.clone() });
         }
         Ok(self)
     }
@@ -305,15 +301,24 @@ mod tests {
             .stdout("/var/log/svc.out")
             .stderr("/var/log/svc.err");
         assert_eq!(cfg.name, "svc");
-        assert_eq!(cfg.pid_file.as_deref(), Some(std::path::Path::new("/tmp/svc.pid")));
+        assert_eq!(
+            cfg.pid_file.as_deref(),
+            Some(std::path::Path::new("/tmp/svc.pid"))
+        );
         assert_eq!(
             cfg.working_dir.as_deref(),
             Some(std::path::Path::new("/var/lib/svc"))
         );
         assert_eq!(cfg.user.as_deref(), Some("svc"));
         assert_eq!(cfg.group.as_deref(), Some("svc"));
-        assert_eq!(cfg.stdout.as_deref(), Some(std::path::Path::new("/var/log/svc.out")));
-        assert_eq!(cfg.stderr.as_deref(), Some(std::path::Path::new("/var/log/svc.err")));
+        assert_eq!(
+            cfg.stdout.as_deref(),
+            Some(std::path::Path::new("/var/log/svc.out"))
+        );
+        assert_eq!(
+            cfg.stderr.as_deref(),
+            Some(std::path::Path::new("/var/log/svc.err"))
+        );
     }
 
     #[test]
@@ -330,10 +335,8 @@ mod tests {
 
     #[test]
     fn test_daemonize_writes_and_drops_pid_file() {
-        let tmp = std::env::temp_dir().join(format!(
-            "service-kernel-pid-{}.pid",
-            std::process::id()
-        ));
+        let tmp =
+            std::env::temp_dir().join(format!("service-kernel-pid-{}.pid", std::process::id()));
         let _ = std::fs::remove_file(&tmp);
         let adapter = DaemonAdapter::new(DaemonConfig::new("svc").pid_file(&tmp))
             .unwrap()

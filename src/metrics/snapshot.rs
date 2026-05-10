@@ -78,9 +78,10 @@ mod tests {
     #[test]
     fn test_kernel_metrics_round_trip() {
         let mut snap = MetricsSnapshot::empty();
-        let _ = snap
-            .kernel_metrics
-            .insert(crate::metrics::names::LIFECYCLE_PHASE, MetricValue::Gauge(2.0));
+        let _ = snap.kernel_metrics.insert(
+            crate::metrics::names::LIFECYCLE_PHASE,
+            MetricValue::Gauge(2.0),
+        );
         assert!(snap
             .kernel_metrics
             .contains_key(crate::metrics::names::LIFECYCLE_PHASE));

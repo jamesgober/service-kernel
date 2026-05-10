@@ -272,7 +272,10 @@ mod tests {
             let g = Arc::clone(&g);
             handles.push(thread::spawn(move || g.set(n).is_ok()));
         }
-        let wins: usize = handles.into_iter().map(|h| usize::from(h.join().unwrap())).sum();
+        let wins: usize = handles
+            .into_iter()
+            .map(|h| usize::from(h.join().unwrap()))
+            .sum();
         assert_eq!(wins, 1);
         assert!(g.is_initialized());
     }

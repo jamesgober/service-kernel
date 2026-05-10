@@ -1,7 +1,8 @@
 //! Worker state vocabulary.
 //!
 //! [`WorkerState`] is the supervisor's view of where a worker is in
-//! its run cycle. Consumers see this through [`WorkerHandle::state`](super::WorkerHandle::state)
+//! its run cycle. Consumers see this through the Tokio-gated
+//! `WorkerHandle::state`
 //! and per-worker `KernelSnapshot` entries.
 
 use std::fmt;

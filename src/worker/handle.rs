@@ -27,11 +27,7 @@ pub struct WorkerHandle {
 
 impl WorkerHandle {
     /// Constructs a handle. Used internally by the supervisor.
-    pub(crate) fn new(
-        id: WorkerId,
-        name: &'static str,
-        cancel_token: CancellationToken,
-    ) -> Self {
+    pub(crate) fn new(id: WorkerId, name: &'static str, cancel_token: CancellationToken) -> Self {
         Self {
             id,
             name,

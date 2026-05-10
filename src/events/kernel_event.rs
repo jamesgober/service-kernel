@@ -90,9 +90,8 @@ impl KernelEvent {
 /// Lifecycle state change events.
 ///
 /// Emitted by [`LifecycleController`](crate::lifecycle::LifecycleController)
-/// (`Transition`) and the
-/// [`ShutdownCoordinator`](crate::shutdown::ShutdownCoordinator)
-/// (`ShutdownStarted` / `ShutdownCompleted`).
+/// (`Transition`) and, when the `tokio` feature is enabled, the
+/// shutdown coordinator (`ShutdownStarted` / `ShutdownCompleted`).
 #[non_exhaustive]
 #[derive(Debug, Clone, Copy)]
 pub enum LifecycleEvent {
@@ -112,10 +111,9 @@ pub enum LifecycleEvent {
     },
     /// The shutdown coordinator finished its sequence.
     ///
-    /// Carries summary counts. The full
-    /// [`ShutdownReport`](crate::shutdown::ShutdownReport) is
-    /// returned from
-    /// [`ShutdownCoordinator::shutdown`](crate::shutdown::ShutdownCoordinator::shutdown).
+    /// Carries summary counts. With the `tokio` feature enabled, the
+    /// full `ShutdownReport` is returned from the shutdown
+    /// coordinator's `shutdown` method.
     ShutdownCompleted {
         /// Total time the shutdown sequence took.
         duration: Duration,
@@ -313,7 +311,12 @@ mod tests {
             at: now,
         };
         match event {
-            HealthEvent::SubsystemChanged { subsystem, from, to, at } => {
+            HealthEvent::SubsystemChanged {
+                subsystem,
+                from,
+                to,
+                at,
+            } => {
                 assert_eq!(subsystem, "storage");
                 assert_eq!(from, HealthStatus::Healthy);
                 assert_eq!(to, HealthStatus::Degraded);
@@ -336,8 +339,14 @@ mod tests {
             },
         ) {
             (
-                MetricEvent::Counter { name: c_name, value: c_value },
-                MetricEvent::Gauge { name: g_name, value: g_value },
+                MetricEvent::Counter {
+                    name: c_name,
+                    value: c_value,
+                },
+                MetricEvent::Gauge {
+                    name: g_name,
+                    value: g_value,
+                },
             ) => {
                 assert_eq!(c_name, "kernel.lifecycle.transitions");
                 assert_eq!(c_value, 5);

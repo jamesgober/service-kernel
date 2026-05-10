@@ -10,7 +10,9 @@ use std::time::Duration;
 
 use service_kernel::events::{KernelEvent, WorkerEvent};
 use service_kernel::kernel::KernelBuilder;
-use service_kernel::worker::{Worker, WorkerContext, WorkerError, WorkerLifecycleEvent, WorkerSpec};
+use service_kernel::worker::{
+    Worker, WorkerContext, WorkerError, WorkerLifecycleEvent, WorkerSpec,
+};
 
 struct PanicSync;
 
