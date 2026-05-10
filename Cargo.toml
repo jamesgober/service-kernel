@@ -1,0 +1,194 @@
+######################################################
+# SERVICE KERNEL: Runtime control plane for Rust services
+# Copyright (c) 2026 James Gober <me@jamesgober.com>
+######################################################
+[package]
+name    = "service-kernel"
+version = "0.1.0"
+
+# METADATA
+readme  = "README.md"
+license = "Apache-2.0 OR MIT"
+
+# RUST VERSION
+edition      = "2021"
+rust-version = "1.75"
+
+# LINKS
+documentation = "https://docs.rs/service-kernel"
+repository    = "https://github.com/jamesgober/service-kernel"
+homepage      = "https://github.com/jamesgober/service-kernel"
+
+# INCLUDES
+include = [
+    "src/**/*",
+    "tests/**/*",
+    "benches/**/*",
+    "examples/**/*",
+    "Cargo.toml",
+    "README.md",
+    "LICENSE-APACHE",
+    "LICENSE-MIT",
+    "CHANGELOG.md",
+]
+
+# DESCRIPTION
+description = "Runtime control plane for Rust services: lifecycle, supervised workers, events, errors, health, metrics, and graceful shutdown."
+
+# KEYWORDS
+keywords = [
+    "kernel",
+    "lifecycle",
+    "supervisor",
+    "service",
+    "runtime",
+]
+
+# CATEGORIES
+categories = [
+    "asynchronous",
+    "concurrency",
+    "rust-patterns",
+]
+
+# AUTHORS
+authors = [
+    "James Gober <me@jamesgober.com>"
+]
+
+
+
+###########################
+# LIBRARY
+###########################
+[lib]
+name = "service_kernel"
+path = "src/lib.rs"
+
+
+###########################
+# FEATURES
+###########################
+[features]
+# Default is the lean core: lifecycle, subsystems, events, errors,
+# health, shutdown. No async runtime, no worker supervision, no
+# integrations. Pulls in `mod-events` only.
+default = []
+
+# Tokio-backed async worker supervision. Adds AsyncWorker support,
+# the supervisor, watchdog, panic boundaries, restart policy
+# enforcement, and the shutdown-coordinator drain loop. Required for
+# any consumer that wants supervised long-running tasks.
+tokio = ["dep:tokio", "dep:tokio-util", "dep:async-trait"]
+
+# Daemon hosting via `proc-daemon`. Adds the host layer that wraps
+# the supervisor in a detached, signal-aware process. Pulls in
+# `tokio` automatically.
+daemon = ["tokio", "dep:proc-daemon"]
+
+# Hardware probing via `fsys` re-export. Useful for services that
+# need drive type, page size, NVMe primitives, etc. without pulling
+# fsys directly. Pure re-export — no kernel logic depends on it.
+hardware = ["dep:fsys"]
+
+# Default error classifier built on `error-forge`. Without this
+# flag, kernel exposes only the `ErrorClassifier` trait — consumers
+# wire up their own. With it, kernel ships a ready-to-use registry
+# matching the prefix-based code system used across the Hive stack.
+errors = ["dep:error-forge"]
+
+# Default metrics backend built on `metrics-lib`. Same pattern as
+# `errors`: trait-only by default, opt-in for the first-party impl.
+metrics = ["dep:metrics-lib"]
+
+
+###########################
+# DEPENDENCIES
+###########################
+[dependencies]
+# Mandatory: typed pub-sub event bus. Kernel events
+# (KernelEvent / WorkerEvent / ErrorEvent / HealthEvent) ride on
+# top of `EventDispatcher`. Async listeners are gated behind the
+# kernel's `tokio` feature, which propagates to mod-events here.
+mod-events = { version = "0.9", default-features = false }
+
+# Mandatory: localization. Every kernel-emitted user-visible
+# string (error messages, log lines, status descriptions, event
+# labels) routes through `lang_lib::t!()`. Translation defaults
+# to identity — disabled until a consumer explicitly initializes
+# a locale. The kernel never hard-codes user-visible English.
+lang-lib = { version = "1.0" }
+
+# Tokio runtime — gated behind the `tokio` feature flag.
+# Feature set rationale:
+# - `rt` + `rt-multi-thread`: supervisor + workers spawn on the
+#   shared runtime; multi-thread is the production target.
+# - `sync`: `oneshot`, `mpsc`, `Notify`, `Semaphore` for shutdown
+#   signaling, worker handles, and the connection drain.
+# - `time`: watchdog timeouts, restart backoff, drain deadlines.
+# - `macros`: `#[tokio::test]` and `select!` in the supervisor.
+# - `signal`: SIGTERM / SIGINT / Ctrl+C handling in the daemon
+#   feature, enabled here so plain `tokio` consumers can wire up
+#   their own signal layer if they skip `daemon`.
+tokio = { version = "1", features = ["rt", "rt-multi-thread", "sync", "time", "macros", "signal"], optional = true }
+
+# Cancellation tokens + JoinSet helpers. Kernel uses
+# `CancellationToken` as the cooperative-cancel primitive across
+# the supervisor, watchdog, and shutdown coordinator. JoinSet is
+# the connection drain in `shutdown::drain`.
+tokio-util = { version = "0.7", features = ["rt"], optional = true }
+
+# Object-safe async traits — gated behind `tokio`. Stable Rust's
+# native `async fn in trait` is not object-safe yet; the kernel
+# stores `Arc<dyn AsyncWorker>` so the supervisor can dispatch
+# uniformly across heterogeneous worker types. `async-trait` boxes
+# the future to make this work.
+async-trait = { version = "0.1", optional = true }
+
+# Daemon hosting — gated behind `daemon`. First-party crate; the
+# version pin tracks the same release line used by hive-system.
+proc-daemon = { version = "1.0", optional = true, features = ["tokio"] }
+
+# Hardware probing re-export — gated behind `hardware`.
+# Pinned to 0.6 (latest published on crates.io). Bump when the
+# 0.7 line ships publicly.
+fsys = { version = "0.9", optional = true }
+
+# Default error classifier — gated behind `errors`.
+error-forge = { version = "0.9.7", optional = true }
+
+# Default metrics backend — gated behind `metrics`.
+metrics-lib = { version = "0.9.1", optional = true }
+
+
+###########################
+# DEV DEPENDENCIES
+###########################
+[dev-dependencies]
+# Criterion is the standard micro-benchmarking framework. Used for
+# event-dispatch and supervisor-overhead micro-benchmarks once the
+# core lands.
+criterion = { version = "0.5", features = ["html_reports"] }
+
+# Tokio with full features for tests that exercise the supervisor.
+tokio = { version = "1", features = ["full", "test-util"] }
+
+
+###########################
+# PROFILE RELEASE
+###########################
+[profile.release]
+opt-level     = 3
+lto           = "thin"
+codegen-units = 1
+strip         = "symbols"
+
+
+###########################
+# PROFILE BENCH
+###########################
+[profile.bench]
+opt-level     = 3
+lto           = "thin"
+codegen-units = 1
+debug         = true
