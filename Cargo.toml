@@ -94,7 +94,7 @@ hardware = ["dep:fsys"]
 # Default error classifier built on `error-forge`. Without this
 # flag, kernel exposes only the `ErrorClassifier` trait — consumers
 # wire up their own. With it, kernel ships a ready-to-use registry
-# matching the prefix-based code system used across the Hive stack.
+# matching a prefix-based error code system.
 errors = ["dep:error-forge"]
 
 # Default metrics backend built on `metrics-lib`. Same pattern as
@@ -146,7 +146,7 @@ tokio-util = { version = "0.7", features = ["rt"], optional = true }
 async-trait = { version = "0.1", optional = true }
 
 # Daemon hosting — gated behind `daemon`. First-party crate; the
-# version pin tracks the same release line used by hive-system.
+# version pin tracks the current release line.
 proc-daemon = { version = "1.0", optional = true, features = ["tokio"] }
 
 # Hardware probing re-export — gated behind `hardware`.

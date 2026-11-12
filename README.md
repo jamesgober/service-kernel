@@ -51,7 +51,7 @@ for the full roadmap.
 - **Error policy** &mdash; `ErrorClassifier` trait, severity vocabulary, and an action policy that maps errors to runtime behavior (`LogOnly`, `MarkDegraded`, `RestartWorker`, `OpenCircuit`, `BeginShutdown`, `AbortProcess`). Default impl over `error-forge` is gated behind the `errors` feature.
 - **Health registry** &mdash; per-subsystem health states (`Healthy` / `Degraded` / `Unhealthy` / `Critical` / `Unknown`) aggregated into a global view.
 - **Metrics protocol** &mdash; `MetricsBackend` trait kernel emits into. Default impl over `metrics-lib` is gated behind the `metrics` feature.
-- **Shutdown coordinator** &mdash; drain coordinator with configurable grace-period semantics. Lifted from a production runtime that ships in [hive-system](https://github.com/jamesgober).
+- **Shutdown coordinator** &mdash; drain coordinator with configurable grace-period semantics. Lifted from a production runtime.
 
 &nbsp;
 

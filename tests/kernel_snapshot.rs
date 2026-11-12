@@ -76,7 +76,7 @@ fn test_snapshot_after_run_reports_stopped_state() {
 
 #[test]
 fn test_snapshot_includes_kernel_name() {
-    let kernel = KernelBuilder::new("hivedb").build().unwrap();
+    let kernel = KernelBuilder::new("myapp").build().unwrap();
     let snap = kernel.snapshot();
-    assert_eq!(snap.name, "hivedb");
+    assert_eq!(snap.name, "myapp");
 }

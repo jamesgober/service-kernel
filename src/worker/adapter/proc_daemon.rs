@@ -1,7 +1,7 @@
 //! `proc-daemon`-backed daemon adapter.
 //!
 //! [`DaemonAdapter`] hosts a [`Kernel`] inside
-//! a daemon-managed process. Per `.dev/PLAN.md` §6.8, **one kernel
+//! a daemon-managed process. By design, **one kernel
 //! equals one process equals one daemon** — the adapter is single-shot
 //! and not designed for multi-daemon scenarios.
 //!

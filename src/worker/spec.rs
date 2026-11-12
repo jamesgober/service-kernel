@@ -7,8 +7,8 @@
 //! ```
 //! use service_kernel::worker::WorkerSpec;
 //!
-//! let spec = WorkerSpec::new("hive-distro");
-//! assert_eq!(spec.name, "hive-distro");
+//! let spec = WorkerSpec::new("my-worker");
+//! assert_eq!(spec.name, "my-worker");
 //! ```
 
 use std::time::Duration;

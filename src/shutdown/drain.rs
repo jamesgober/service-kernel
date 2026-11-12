@@ -1,8 +1,8 @@
 //! Generic [`tokio::task::JoinSet`] drain with grace + abort.
 //!
 //! Used by the shutdown coordinator to wait for in-flight tasks
-//! to finish, with a deadline. Pattern lifted from the
-//! `hive-system` production runtime's `drain_connections` helper
+//! to finish, with a deadline. Pattern lifted from an
+//! existing production runtime's connection drain helper
 //! and generalized to any `JoinSet<T>`.
 
 use std::time::{Duration, Instant};

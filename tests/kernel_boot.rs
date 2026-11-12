@@ -121,7 +121,7 @@ fn test_subsystem_can_report_health() {
 
 #[test]
 fn test_kernel_name_round_trips_into_context() {
-    let kernel = KernelBuilder::new("hivedb").build().unwrap();
+    let kernel = KernelBuilder::new("myapp").build().unwrap();
     let ctx = kernel.context();
-    assert_eq!(ctx.kernel_name(), "hivedb");
+    assert_eq!(ctx.kernel_name(), "myapp");
 }
