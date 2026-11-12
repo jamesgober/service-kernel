@@ -140,7 +140,7 @@ impl KernelBuilder {
     /// Constructs a builder with the given kernel name.
     ///
     /// `name` is used as a metrics label and event-topic prefix.
-    /// Pass a stable identifier (`"hivedb"`, `"my-service"`), not a
+    /// Pass a stable identifier (`"myapp"`, `"my-service"`), not a
     /// dynamic string.
     #[inline]
     #[must_use]

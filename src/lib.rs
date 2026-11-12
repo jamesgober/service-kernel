@@ -79,7 +79,7 @@
 //!   ↓
 //! service-kernel
 //!   ↓
-//! consumer (hive-core, artex services, third-party apps)
+//! consumer (services and applications)
 //! ```
 //!
 //! The kernel coordinates. The consumer owns business logic.

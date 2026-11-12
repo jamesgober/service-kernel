@@ -31,7 +31,7 @@ This project starts at `0.1.0` and never publishes `0.0.x` versions.
     kernel's signal handler and runs it; on exit the PID file is
     removed automatically.
   - Single daemon per kernel (one kernel = one process = one
-    daemon, per `.dev/PLAN.md` §6.8).
+    daemon).
   - Documented signal-handling coordination: the adapter delegates
     to `Kernel::install_signal_handler` to avoid double-registering
     handlers with `proc-daemon`.
@@ -74,7 +74,7 @@ This project starts at `0.1.0` and never publishes `0.0.x` versions.
     recorded in the report but do not stop the sequence.
   - `drain` function — generic `JoinSet<T>` drain with grace +
     abort. Returns `DrainOutcome { drained, aborted, elapsed }`.
-    Pattern lifted from `hive-system`'s `drain_connections` and
+    Pattern lifted from an existing production runtime and
     generalized.
   - `ShutdownCoordinator` — orchestrates the shutdown sequence.
     `register_hook` / `shutdown` / `token` / `grace` /
@@ -479,8 +479,8 @@ This project starts at `0.1.0` and never publishes `0.0.x` versions.
     `try_set` (equivalent dual API), a `get_unchecked` fast path that
     panics through `lang_lib::t!()` under the
     `kernel.primitives.global.uninitialized` key, and a `Debug` impl that
-    distinguishes initialized from uninitialized state. Lifted from the
-    Hive runtime (`hive/sys/global.rs`) and audited: removed unnecessary
+    distinguishes initialized from uninitialized state. Lifted from an
+    existing runtime and audited: removed unnecessary
     `unsafe` `Send`/`Sync` impls (the bounds come transitively from
     `OnceLock`), routed the panic message through `lang_lib::t!()`, and
     dropped the `init` closure helper that the kernel does not need.
@@ -496,7 +496,7 @@ This project starts at `0.1.0` and never publishes `0.0.x` versions.
     ticking lives in `worker::watchdog`, in a later milestone).
 - `lifecycle` module with the kernel run-cycle machine:
   - `Phase` — coarse run-cycle stage (`Idle / Boot / Load / Exec /
-    Shutdown`). Lifted from `hive/runtime.rs` and audited: marked
+    Shutdown`). Lifted from an existing runtime and audited: marked
     `#[non_exhaustive]`, added `as_str` and `ordinal` accessors, kept
     the existing uppercase `Display` for log/metrics output.
   - `KernelState` — fine-grained runtime status (`Created / Booting /
@@ -534,18 +534,8 @@ This project starts at `0.1.0` and never publishes `0.0.x` versions.
   user-visible strings will route through `lang_lib::t!()`. Translation
   defaults to identity until a consumer explicitly initializes a locale —
   the kernel never hard-codes user-visible English.
-- Expanded non-negotiables in `.dev/PLAN.md` covering: cross-platform
-  mandate (Linux/macOS/Windows first-class), enterprise/distributed/clustered
-  consumer support, mandatory localization through `lang-lib`, comprehensive
-  per-milestone testing (unit + edge + stress + lint + doc + cross-platform
-  CI), changelog discipline, and clean-code mandate (SOLID, KISS, DRY, YAGNI,
-  human-written-looking docs).
-- Editor constraints expanded with: cross-platform requirement (constraint
-  #12), localization routing (#13), CI-green close on every milestone (#14),
-  and the "audit-and-enhance" rule for code lifted from Hive or fsys.
 - Milestones explicitly framed as pauses in development, not version
   boundaries — the crate stays at `0.1.0` until the full feature set ships.
-- `.dev/milestones/` directory with per-milestone work orders (B through I).
 
 ## [0.1.0] - 2026-05-05
 
@@ -568,9 +558,6 @@ This project starts at `0.1.0` and never publishes `0.0.x` versions.
   (REPS-aligned warnings, missing docs, panicking macros, untyped
   unsafe).
 - Empty `prelude` module ready to populate as modules land.
-- `.dev/PROMPT.md`, `.dev/DIRECTIVES.md`, and `.dev/PLAN.md`
-  carrying the project scope, build process, AI-collaboration
-  guard rails, and the full architectural roadmap.
 
 [Unreleased]: https://github.com/jamesgober/service-kernel/compare/v0.1.0...HEAD
 [0.1.0]: https://github.com/jamesgober/service-kernel/releases/tag/v0.1.0
